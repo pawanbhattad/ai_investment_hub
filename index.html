@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Infrastructure Investment Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            background: rgba(255,255,255,0.1);
+            padding: 50px 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        h1 {
+            font-size: 3.2em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        .feature h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .feature p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 18px 35px;
+            background: #ff6b6b;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+            min-width: 200px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,107,107,0.6);
+            background: #ff5252;
+        }
+        
+        .secondary-button {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+        }
+        
+        .secondary-button:hover {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 8px 25px rgba(255,255,255,0.3);
+        }
+        
+        .disclaimer {
+            margin-top: 40px;
+            font-size: 0.95em;
+            opacity: 0.7;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tech-stack {
+            margin: 30px 0;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .tech-stack span {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💎 AI Infrastructure Investment Hub</h1>
+        
+        <p class="subtitle">
+            Your Gateway to Tech Stocks Powering the AI Revolution
+        </p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">29</div>
+                <div class="stat-label">Companies</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Markets</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">Live</div>
+                <div class="stat-label">Data</div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🏢 Company Analysis</h3>
+                <p>Detailed profiles of 29 companies with comprehensive financial metrics, investment rationale, and real-time stock data.</p>
+            </div>
+            <div class="feature">
+                <h3>📈 Interactive Charts</h3>
+                <p>Live stock prices, candlestick charts, technical indicators, and comparative analysis tools.</p>
+            </div>
+            <div class="feature">
+                <h3>🎯 Strategic Categories</h3>
+                <p>Blue Chip leaders, High Growth players, Hidden Gems, Turnaround stories, and India-focused opportunities.</p>
+            </div>
+            <div class="feature">
+                <h3>🌍 Global Coverage</h3>
+                <p>US market leaders, global infrastructure companies, and high-growth Indian AI infrastructure firms.</p>
+            </div>
+            <div class="feature">
+                <h3>📚 Research Backed</h3>
+                <p>All insights backed by reputable sources with clickable citations and comprehensive risk assessments.</p>
+            </div>
+            <div class="feature">
+                <h3>🌙 Dark/Light Theme</h3>
+                <p>Responsive design with automatic theme detection and mobile-optimized interface.</p>
+            </div>
+        </div>
+        
+        <div class="tech-stack">
+            <strong>Built with:</strong>
+            <span>Streamlit</span>
+            <span>Plotly</span>
+            <span>Yahoo Finance API</span>
+            <span>Python</span>
+        </div>
+        
+        <div class="cta-buttons">
+            <a href="https://ai-investment-hub.streamlit.app/" class="cta-button">
+                🚀 Launch Interactive App
+            </a>
+            <a href="https://github.com/pawanbhattad/ai_investment_hub" class="cta-button secondary-button">
+                📚 View Source Code
+            </a>
+        </div>
+        
+        <div class="disclaimer">
+            <strong>⚠️ Important Disclaimer:</strong> This platform is for educational and research purposes only. 
+            The information provided does not constitute financial advice. All investment decisions should be made 
+            after thorough personal research and consultation with qualified financial advisors. Past performance 
+            is not indicative of future results.
+        </div>
+    </div>
+</body>
+</html>
