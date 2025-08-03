@@ -12,7 +12,9 @@ A comprehensive Streamlit web application for analyzing AI infrastructure invest
 
 ## Live Demo
 
-🚀 **[View Live Application](https://your-username.github.io/ai-investment-hub/)**
+🚀 **[View Live Application](https://pawanbhattad.github.io/ai_investment_hub/)**
+
+> **Note**: For the best experience, the interactive Streamlit app is recommended. You can access it via platforms like Hugging Face Spaces or Streamlit Cloud.
 
 ## Technology Stack
 
