@@ -23,9 +23,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Initialize mobile mode (CSS will handle responsive behavior)
+# Initialize mobile mode for responsive design
 if 'mobile_mode' not in st.session_state:
-    st.session_state['mobile_mode'] = False  # CSS media queries handle mobile detection
+    st.session_state['mobile_mode'] = False
 
 # Custom CSS for mobile optimization and styling
 st.markdown("""
@@ -75,12 +75,31 @@ st.markdown("""
         /* Mobile-specific chart sizing with proper spacing */
         .stPlotlyChart {
             height: 300px !important;
-            margin-bottom: 20px !important;
+            margin-bottom: 30px !important;
         }
         
-        /* Ensure proper spacing after charts */
-        .stPlotlyChart + div {
-            margin-top: 20px !important;
+        /* Ensure proper spacing after charts with higher specificity */
+        .stApp .main .block-container .stPlotlyChart {
+            margin-bottom: 30px !important;
+        }
+        
+        /* Chart spacer containers */
+        .chart-spacer {
+            height: 30px !important;
+            width: 100% !important;
+            clear: both !important;
+        }
+        
+        /* Section spacers */
+        .section-spacer {
+            height: 20px !important;
+            width: 100% !important;
+            clear: both !important;
+        }
+        
+        /* Prevent content overlap on charts */
+        [data-testid="stPlotlyChart"] + div {
+            margin-top: 30px !important;
         }
         
         /* Period button optimizations for mobile */
@@ -88,26 +107,33 @@ st.markdown("""
             padding: 2px !important;
         }
         
-        /* Make buttons smaller and more touch-friendly */
+        /* Touch-optimized buttons following 44px standards */
         .stButton > button {
-            padding: 8px 12px !important;
-            font-size: 12px !important;
             min-height: 44px !important;
-            margin: 2px 0 !important;
+            min-width: 44px !important;
+            padding: 10px 12px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            margin: 3px 0 !important;
+            border-radius: 6px !important;
+            touch-action: manipulation !important;
         }
         
-        /* Period button grid for mobile - force responsive layout */
-        .period-button-row [data-testid="column"] {
+        /* Period button grid for mobile - ensure proper touch targets */
+        .period-buttons-flat [data-testid="column"],
+        .comp-period-buttons-flat [data-testid="column"] {
             width: 25% !important;
             flex: 0 0 25% !important;
-            padding: 2px !important;
+            padding: 3px !important;
         }
         
-        /* Mobile-specific period button improvements */
+        /* Ensure all buttons meet touch standards */
         .stButton button {
             width: 100% !important;
-            font-size: 11px !important;
-            padding: 6px 4px !important;
+            font-size: 12px !important;
+            padding: 8px 6px !important;
+            min-height: 44px !important;
+            font-weight: 500 !important;
         }
         
         /* Chart type selector mobile optimization */
@@ -115,19 +141,29 @@ st.markdown("""
             margin-top: 8px !important;
         }
         
-        /* Metric cards mobile layout */
+        /* Touch-optimized metric cards mobile layout */
         .metric-card {
-            margin: 8px 0;
-            padding: 15px 12px;
-            min-height: 70px;
+            margin: 10px 0;
+            padding: 16px 14px;
+            min-height: 80px;
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .metric-card:hover, .metric-card:active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         .metric-value {
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 600;
         }
         
         .metric-label {
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
         }
         
         /* Company cards mobile optimization */
@@ -148,21 +184,27 @@ st.markdown("""
             padding-bottom: 0.5rem !important;
         }
         
-        /* Financial highlights mobile - force 2 columns */
+        /* Touch-optimized financial metrics - flat 4-column layout */
+        .financial-metrics-flat [data-testid="column"] {
+            width: 25% !important;
+            flex: 0 0 25% !important;
+            padding: 4px !important;
+            min-height: 44px !important;
+        }
+        
+        /* Stack to 2 columns on very small screens */
+        @media (max-width: 480px) {
+            .financial-metrics-flat [data-testid="column"] {
+                width: 50% !important;
+                flex: 0 0 50% !important;
+            }
+        }
+        
+        /* Legacy support for old container class */
         .financial-metrics-container [data-testid="column"] {
             width: 50% !important;
             flex: 0 0 50% !important;
             padding: 4px !important;
-        }
-        
-        .financial-metrics-container [data-testid="column"]:nth-child(n+3) {
-            margin-top: 8px !important;
-        }
-        
-        /* Force wrap after 2 columns */
-        .financial-metrics-container [data-testid="column"]:nth-child(3),
-        .financial-metrics-container [data-testid="column"]:nth-child(4) {
-            margin-top: 8px !important;
         }
         
         /* Company info cards mobile - 2 columns */
@@ -686,10 +728,24 @@ def create_advanced_stock_chart(info, hist, ticker, chart_type="candlestick"):
         row=2, col=1
     )
 
-    # Responsive chart height based on screen size
+    # Responsive chart height with improved mobile detection
     import streamlit as st
-    # Use CSS media query detection via a smaller mobile-friendly height
-    chart_height = 300 if st.session_state.get('mobile_mode', False) else 500
+    
+    # More sophisticated responsive height calculation
+    # CSS media query-like behavior: assume mobile if not explicitly set
+    is_mobile = st.session_state.get('mobile_mode', True)  # Default to mobile-friendly
+    
+    # Progressive height sizing
+    if is_mobile:
+        chart_height = 350  # Slightly taller for better mobile readability
+        legend_size = 9
+        font_size = 11
+        margin_size = 25
+    else:
+        chart_height = 500
+        legend_size = 10
+        font_size = 12
+        margin_size = 40
     
     # Update layout with responsive sizing
     fig.update_layout(
@@ -698,19 +754,21 @@ def create_advanced_stock_chart(info, hist, ticker, chart_type="candlestick"):
         template="plotly_white",
         showlegend=True,
         legend=dict(
-            x=0, y=1, 
-            font=dict(size=8 if chart_height == 300 else 10),
-            bgcolor="rgba(255,255,255,0.8)"
+            x=0, y=1.02,  # Position legend above chart for mobile
+            orientation="h" if is_mobile else "v",
+            font=dict(size=legend_size),
+            bgcolor="rgba(255,255,255,0.9)"
         ),
         margin=dict(
-            l=30 if chart_height == 300 else 40, 
-            r=30 if chart_height == 300 else 40, 
-            t=30 if chart_height == 300 else 40, 
-            b=30 if chart_height == 300 else 40
+            l=margin_size, 
+            r=margin_size, 
+            t=40 if is_mobile else 50,  # Extra top margin for horizontal legend
+            b=margin_size
         ),
         hovermode='x unified',
-        # Mobile-specific optimizations
-        font=dict(size=10 if chart_height == 300 else 12)
+        font=dict(size=font_size),
+        # Ensure responsive behavior
+        autosize=True
     )
 
     # Dynamic Y-axis scaling
@@ -802,12 +860,8 @@ def display_metric_card(label, value, col):
     """, unsafe_allow_html=True)
 
 def display_financial_metrics(metrics):
-    """Display financial metrics in a responsive grid."""
-    # Create a responsive container that CSS will handle
-    st.markdown('<div class="financial-metrics-container">', unsafe_allow_html=True)
-    
-    # Use CSS-responsive columns (CSS will handle mobile vs desktop)
-    cols = st.columns(4)  # CSS will make this 2 columns on mobile
+    """Display financial metrics in a mobile-responsive grid using flat structure."""
+    st.markdown('<div class="financial-metrics-flat">', unsafe_allow_html=True)
 
     # Format values consistently
     def format_metric_value(value):
@@ -832,8 +886,46 @@ def display_financial_metrics(metrics):
         ("Net Margin", metrics.get("net_margin", "N/A"))
     ]
 
-    for i, (label, value) in enumerate(metric_mapping):
-        display_metric_card(label, value, cols[i % len(cols)])
+    # Streamlit-native flat structure: Row 1 with 4 columns (no nesting)
+    metric_row1_col1, metric_row1_col2, metric_row1_col3, metric_row1_col4 = st.columns(4)
+    
+    with metric_row1_col1:
+        if len(metric_mapping) > 0:
+            display_metric_card(metric_mapping[0][0], metric_mapping[0][1], metric_row1_col1)
+    
+    with metric_row1_col2:
+        if len(metric_mapping) > 1:
+            display_metric_card(metric_mapping[1][0], metric_mapping[1][1], metric_row1_col2)
+    
+    with metric_row1_col3:
+        if len(metric_mapping) > 2:
+            display_metric_card(metric_mapping[2][0], metric_mapping[2][1], metric_row1_col3)
+    
+    with metric_row1_col4:
+        if len(metric_mapping) > 3:
+            display_metric_card(metric_mapping[3][0], metric_mapping[3][1], metric_row1_col4)
+    
+    # Small spacing between rows
+    st.markdown('<div style="height: 8px;"></div>', unsafe_allow_html=True)
+    
+    # Streamlit-native flat structure: Row 2 with 4 columns (no nesting)
+    metric_row2_col1, metric_row2_col2, metric_row2_col3, metric_row2_col4 = st.columns(4)
+    
+    with metric_row2_col1:
+        if len(metric_mapping) > 4:
+            display_metric_card(metric_mapping[4][0], metric_mapping[4][1], metric_row2_col1)
+    
+    with metric_row2_col2:
+        if len(metric_mapping) > 5:
+            display_metric_card(metric_mapping[5][0], metric_mapping[5][1], metric_row2_col2)
+    
+    with metric_row2_col3:
+        if len(metric_mapping) > 6:
+            display_metric_card(metric_mapping[6][0], metric_mapping[6][1], metric_row2_col3)
+    
+    with metric_row2_col4:
+        if len(metric_mapping) > 7:
+            display_metric_card(metric_mapping[7][0], metric_mapping[7][1], metric_row2_col4)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1286,19 +1378,28 @@ def main():
             # Company header
             st.markdown(f"## {company['name']} ({company['ticker']})")
 
-            # Key info cards - responsive layout
-            st.markdown('<div class="company-info-container">', unsafe_allow_html=True)
-            col1, col2, col3, col4 = st.columns(4)  # CSS will handle mobile responsiveness
-            with col1:
+            # Key info cards - mobile-responsive layout
+            st.markdown('<div class="company-info-responsive">', unsafe_allow_html=True)
+            
+            # Row 1: Market Cap and Sector
+            info_row1_col1, info_row1_col2 = st.columns(2)
+            with info_row1_col1:
                 formatted_market_cap = format_market_cap_with_currency(company['market_cap'], company.get('ticker', ''))
                 st.metric("Market Cap", formatted_market_cap)
-            with col2:
+            with info_row1_col2:
                 st.metric("Sector", company['sector'])
-            with col3:
+            
+            # Small spacing
+            st.markdown('<div style="height: 8px;"></div>', unsafe_allow_html=True)
+            
+            # Row 2: Country and Recommendation
+            info_row2_col1, info_row2_col2 = st.columns(2)
+            with info_row2_col1:
                 st.metric("Country", company['country'])
-            with col4:
+            with info_row2_col2:
                 recommendation_color = "🟢" if company['investment_recommendation'] == "Buy" else "🟡" if company['investment_recommendation'] == "Hold" else "🔴"
                 st.metric("Recommendation", f"{recommendation_color} {company['investment_recommendation']}")
+            
             st.markdown('</div>', unsafe_allow_html=True)
 
             # Stock chart section
@@ -1316,37 +1417,73 @@ def main():
             if f'chart_type_{company["ticker"]}' not in st.session_state:
                 st.session_state[f'chart_type_{company["ticker"]}'] = "candlestick"
 
-            # Responsive period button layout
-            st.markdown('<div class="period-button-row">', unsafe_allow_html=True)
+            # Streamlit-native flat period button layout
+            st.markdown('<div class="period-buttons-flat">', unsafe_allow_html=True)
             
-            # Create responsive columns for period buttons
-            # Mobile: 4 buttons per row (2 rows), Desktop: 8 buttons in one row
-            button_cols1 = st.columns(4)
-            for i, (label, value) in enumerate(periods[:4]):
-                with button_cols1[i]:
-                    if st.button(
-                        label,
-                        key=f"period_{value}_{company['ticker']}",
-                        type="primary" if st.session_state[f'period_{company["ticker"]}'] == value else "secondary",
-                        use_container_width=True
-                    ):
-                        st.session_state[f'period_{company["ticker"]}'] = value
-                        st.rerun()
-
-            # Small spacing between button rows
-            st.markdown('<div style="height: 5px;"></div>', unsafe_allow_html=True)
+            # Row 1: 1D, 5D, 1M, 6M (flat structure - no nesting)
+            period_row1_col1, period_row1_col2, period_row1_col3, period_row1_col4 = st.columns(4)
             
-            button_cols2 = st.columns(4)
-            for i, (label, value) in enumerate(periods[4:]):
-                with button_cols2[i]:
-                    if st.button(
-                        label,
-                        key=f"period_{value}_{company['ticker']}",
-                        type="primary" if st.session_state[f'period_{company["ticker"]}'] == value else "secondary",
-                        use_container_width=True
-                    ):
-                        st.session_state[f'period_{company["ticker"]}'] = value
-                        st.rerun()
+            with period_row1_col1:
+                if st.button("1D", key=f"period_1d_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "1d" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "1d"
+                    st.rerun()
+            
+            with period_row1_col2:
+                if st.button("5D", key=f"period_5d_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "5d" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "5d"
+                    st.rerun()
+            
+            with period_row1_col3:
+                if st.button("1M", key=f"period_1mo_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "1mo" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "1mo"
+                    st.rerun()
+            
+            with period_row1_col4:
+                if st.button("6M", key=f"period_6mo_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "6mo" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "6mo"
+                    st.rerun()
+            
+            # Small spacing between rows
+            st.markdown('<div style="height: 6px;"></div>', unsafe_allow_html=True)
+            
+            # Row 2: YTD, 1Y, 5Y, MAX (flat structure - no nesting)
+            period_row2_col1, period_row2_col2, period_row2_col3, period_row2_col4 = st.columns(4)
+            
+            with period_row2_col1:
+                if st.button("YTD", key=f"period_ytd_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "ytd" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "ytd"
+                    st.rerun()
+            
+            with period_row2_col2:
+                if st.button("1Y", key=f"period_1y_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "1y" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "1y"
+                    st.rerun()
+            
+            with period_row2_col3:
+                if st.button("5Y", key=f"period_5y_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "5y" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "5y"
+                    st.rerun()
+            
+            with period_row2_col4:
+                if st.button("MAX", key=f"period_max_{company['ticker']}", 
+                           type="primary" if st.session_state[f'period_{company["ticker"]}'] == "max" else "secondary",
+                           use_container_width=True):
+                    st.session_state[f'period_{company["ticker"]}'] = "max"
+                    st.rerun()
             
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1371,9 +1508,13 @@ def main():
                 chart = create_advanced_stock_chart(info, hist, company['ticker'], st.session_state[f'chart_type_{company["ticker"]}'])
                 if chart:
                     st.plotly_chart(chart, use_container_width=True)
+                    # Explicit spacing after chart to prevent overlay
+                    st.markdown('<div class="chart-spacer" style="height: 30px;"></div>', unsafe_allow_html=True)
             else:
                 st.error(error)
 
+            # Additional spacing before sections
+            st.markdown('<div class="section-spacer" style="height: 20px;"></div>', unsafe_allow_html=True)
             st.markdown("---")
 
             if view_mode == "Summary":
@@ -1797,35 +1938,73 @@ def main():
             if 'comparison_period' not in st.session_state:
                 st.session_state['comparison_period'] = "1y"
 
-            # Responsive button layout for comparison
-            st.markdown('<div class="period-button-row">', unsafe_allow_html=True)
+            # Streamlit-native flat comparison period button layout
+            st.markdown('<div class="comp-period-buttons-flat">', unsafe_allow_html=True)
             
-            comp_cols1 = st.columns(4)
-            for i, (label, value) in enumerate(periods[:4]):
-                with comp_cols1[i]:
-                    if st.button(
-                        label,
-                        key=f"comp_period_{value}",
-                        type="primary" if st.session_state['comparison_period'] == value else "secondary",
-                        use_container_width=True
-                    ):
-                        st.session_state['comparison_period'] = value
-                        st.rerun()
-
-            # Small spacing between button rows
-            st.markdown('<div style="height: 5px;"></div>', unsafe_allow_html=True)
+            # Row 1: 1D, 5D, 1M, 6M (flat structure - no nesting)
+            comp_row1_col1, comp_row1_col2, comp_row1_col3, comp_row1_col4 = st.columns(4)
             
-            comp_cols2 = st.columns(4)
-            for i, (label, value) in enumerate(periods[4:]):
-                with comp_cols2[i]:
-                    if st.button(
-                        label,
-                        key=f"comp_period_{value}",
-                        type="primary" if st.session_state['comparison_period'] == value else "secondary",
-                        use_container_width=True
-                    ):
-                        st.session_state['comparison_period'] = value
-                        st.rerun()
+            with comp_row1_col1:
+                if st.button("1D", key="comp_period_1d", 
+                           type="primary" if st.session_state['comparison_period'] == "1d" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "1d"
+                    st.rerun()
+            
+            with comp_row1_col2:
+                if st.button("5D", key="comp_period_5d", 
+                           type="primary" if st.session_state['comparison_period'] == "5d" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "5d"
+                    st.rerun()
+            
+            with comp_row1_col3:
+                if st.button("1M", key="comp_period_1mo", 
+                           type="primary" if st.session_state['comparison_period'] == "1mo" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "1mo"
+                    st.rerun()
+            
+            with comp_row1_col4:
+                if st.button("6M", key="comp_period_6mo", 
+                           type="primary" if st.session_state['comparison_period'] == "6mo" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "6mo"
+                    st.rerun()
+            
+            # Small spacing between rows
+            st.markdown('<div style="height: 6px;"></div>', unsafe_allow_html=True)
+            
+            # Row 2: YTD, 1Y, 5Y, MAX (flat structure - no nesting)
+            comp_row2_col1, comp_row2_col2, comp_row2_col3, comp_row2_col4 = st.columns(4)
+            
+            with comp_row2_col1:
+                if st.button("YTD", key="comp_period_ytd", 
+                           type="primary" if st.session_state['comparison_period'] == "ytd" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "ytd"
+                    st.rerun()
+            
+            with comp_row2_col2:
+                if st.button("1Y", key="comp_period_1y", 
+                           type="primary" if st.session_state['comparison_period'] == "1y" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "1y"
+                    st.rerun()
+            
+            with comp_row2_col3:
+                if st.button("5Y", key="comp_period_5y", 
+                           type="primary" if st.session_state['comparison_period'] == "5y" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "5y"
+                    st.rerun()
+            
+            with comp_row2_col4:
+                if st.button("MAX", key="comp_period_max", 
+                           type="primary" if st.session_state['comparison_period'] == "max" else "secondary", 
+                           use_container_width=True):
+                    st.session_state['comparison_period'] = "max"
+                    st.rerun()
             
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1880,8 +2059,17 @@ def main():
                         all_data_available = False
 
                 if all_data_available:
-                    # Responsive chart height for comparison
-                    comp_chart_height = 250 if st.session_state.get('mobile_mode', False) else 400
+                    # Responsive chart height for comparison with consistent mobile logic
+                    is_mobile_comp = st.session_state.get('mobile_mode', True)
+                    
+                    if is_mobile_comp:
+                        comp_chart_height = 300
+                        comp_font_size = 10
+                        comp_margin = 25
+                    else:
+                        comp_chart_height = 400
+                        comp_font_size = 12
+                        comp_margin = 40
                     
                     fig.update_layout(
                         height=comp_chart_height,
@@ -1891,14 +2079,17 @@ def main():
                         hovermode='x unified',
                         template="plotly_white",
                         margin=dict(
-                            l=30 if comp_chart_height == 250 else 40,
-                            r=30 if comp_chart_height == 250 else 40,
-                            t=40 if comp_chart_height == 250 else 50,
-                            b=30 if comp_chart_height == 250 else 40
+                            l=comp_margin,
+                            r=comp_margin,
+                            t=45 if is_mobile_comp else 50,
+                            b=comp_margin
                         ),
-                        font=dict(size=10 if comp_chart_height == 250 else 12)
+                        font=dict(size=comp_font_size),
+                        autosize=True
                     )
                     st.plotly_chart(fig, use_container_width=True)
+                    # Explicit spacing after comparison chart
+                    st.markdown('<div class="chart-spacer" style="height: 30px;"></div>', unsafe_allow_html=True)
 
                 # Side-by-side comparison table
                 st.markdown("### 📊 Side-by-Side Comparison")
@@ -1939,12 +2130,21 @@ def main():
                             st.markdown(f"#### {ticker}")
                             mini_chart = create_advanced_stock_chart(info, hist, ticker, 'line')
                             if mini_chart:
-                                # Responsive mini chart height
-                                mini_height = 200 if st.session_state.get('mobile_mode', False) else 300
+                                # Responsive mini chart height with consistent mobile logic
+                                is_mobile_mini = st.session_state.get('mobile_mode', True)
+                                
+                                if is_mobile_mini:
+                                    mini_height = 250
+                                    mini_margin = 15
+                                else:
+                                    mini_height = 300
+                                    mini_margin = 25
+                                
                                 mini_chart.update_layout(
                                     height=mini_height, 
                                     showlegend=False,
-                                    margin=dict(l=20, r=20, t=20, b=20) if mini_height == 200 else dict(l=30, r=30, t=30, b=30)
+                                    margin=dict(l=mini_margin, r=mini_margin, t=mini_margin, b=mini_margin),
+                                    autosize=True
                                 )
                                 st.plotly_chart(mini_chart, use_container_width=True)
         else:
