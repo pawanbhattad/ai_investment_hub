@@ -23,6 +23,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Initialize mobile mode (CSS will handle responsive behavior)
+if 'mobile_mode' not in st.session_state:
+    st.session_state['mobile_mode'] = False  # CSS media queries handle mobile detection
+
 # Custom CSS for mobile optimization and styling
 st.markdown("""
 <style>
@@ -60,14 +64,143 @@ st.markdown("""
 
     /* Mobile-first responsive design */
     @media (max-width: 768px) {
+        /* Global mobile optimizations */
         .stTabs [data-baseweb="tab-list"] {
             flex-wrap: wrap;
         }
-        .metric-card {
-            margin: 5px 0;
-        }
         .stMarkdown p, .stWrite p {
             font-size: 14px;
+        }
+        
+        /* Mobile-specific chart sizing */
+        .stPlotlyChart {
+            height: 300px !important;
+        }
+        
+        /* Period button optimizations for mobile */
+        [data-testid="column"] {
+            padding: 2px !important;
+        }
+        
+        /* Make buttons smaller and more touch-friendly */
+        .stButton > button {
+            padding: 8px 12px !important;
+            font-size: 12px !important;
+            min-height: 44px !important;
+            margin: 2px 0 !important;
+        }
+        
+        /* Period button grid for mobile - force 2 buttons per row */
+        .period-button-row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 4px !important;
+        }
+        
+        .period-button-row [data-testid="column"] {
+            flex: 1 1 48% !important;
+            max-width: 48% !important;
+            padding: 2px !important;
+        }
+        
+        /* Chart type selector mobile optimization */
+        .chart-type-mobile {
+            margin-top: 8px !important;
+        }
+        
+        /* Metric cards mobile layout */
+        .metric-card {
+            margin: 8px 0;
+            padding: 15px 12px;
+            min-height: 70px;
+        }
+        
+        .metric-value {
+            font-size: 20px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+        }
+        
+        /* Company cards mobile optimization */
+        .company-card {
+            height: 160px !important;
+            margin: 6px 0 !important;
+            padding: 12px !important;
+        }
+        
+        /* Mobile navigation improvements */
+        .stSelectbox > div > div {
+            font-size: 14px;
+        }
+        
+        /* Reduce excessive padding in mobile columns */
+        [data-testid="column"] > div {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        /* Financial highlights mobile - force 2 columns */
+        .financial-metrics-container [data-testid="column"] {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+        }
+        
+        .financial-metrics-container [data-testid="column"]:nth-child(n+3) {
+            margin-top: 10px !important;
+        }
+        
+        /* Company info cards mobile - 2 columns */
+        .company-info-container [data-testid="column"] {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+        }
+        
+        /* Market overview mobile - stack vertically */
+        .market-overview-container [data-testid="column"] {
+            width: 100% !important;
+            flex: 0 0 100% !important;
+            margin-bottom: 10px !important;
+        }
+        
+        /* Investment category company cards - 2 per row on mobile */
+        .stTabs [data-testid="column"] {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            padding: 4px !important;
+        }
+        
+        /* Mobile expander optimization */
+        .streamlit-expanderHeader {
+            font-size: 16px !important;
+        }
+        
+        /* Touch target optimization */
+        button, select, input {
+            min-height: 44px !important;
+        }
+        
+        /* Responsive text sizing */
+        h1 { font-size: 1.8em !important; }
+        h2 { font-size: 1.4em !important; }
+        h3 { font-size: 1.2em !important; }
+        h4 { font-size: 1.1em !important; }
+    }
+    
+    /* Tablet responsive design */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .stPlotlyChart {
+            height: 450px !important;
+        }
+        
+        .metric-card {
+            padding: 18px 15px;
+            min-height: 80px;
+        }
+        
+        .company-card {
+            height: 170px !important;
         }
     }
 
@@ -521,15 +654,31 @@ def create_advanced_stock_chart(info, hist, ticker, chart_type="candlestick"):
         row=2, col=1
     )
 
-    # Update layout
+    # Responsive chart height based on screen size
+    import streamlit as st
+    # Use CSS media query detection via a smaller mobile-friendly height
+    chart_height = 300 if st.session_state.get('mobile_mode', False) else 500
+    
+    # Update layout with responsive sizing
     fig.update_layout(
-        height=600,
+        height=chart_height,
         xaxis_rangeslider_visible=False,
         template="plotly_white",
         showlegend=True,
-        legend=dict(x=0, y=1, font=dict(size=10)),
-        margin=dict(l=40, r=40, t=40, b=40),
-        hovermode='x unified'
+        legend=dict(
+            x=0, y=1, 
+            font=dict(size=8 if chart_height == 300 else 10),
+            bgcolor="rgba(255,255,255,0.8)"
+        ),
+        margin=dict(
+            l=30 if chart_height == 300 else 40, 
+            r=30 if chart_height == 300 else 40, 
+            t=30 if chart_height == 300 else 40, 
+            b=30 if chart_height == 300 else 40
+        ),
+        hovermode='x unified',
+        # Mobile-specific optimizations
+        font=dict(size=10 if chart_height == 300 else 12)
     )
 
     # Dynamic Y-axis scaling
@@ -622,7 +771,11 @@ def display_metric_card(label, value, col):
 
 def display_financial_metrics(metrics):
     """Display financial metrics in a responsive grid."""
-    cols = st.columns(2 if st.session_state.get('mobile_view', False) else 4)
+    # Create a responsive container that CSS will handle
+    st.markdown('<div class="financial-metrics-container">', unsafe_allow_html=True)
+    
+    # Use CSS-responsive columns (CSS will handle mobile vs desktop)
+    cols = st.columns(4)  # CSS will make this 2 columns on mobile
 
     # Format values consistently
     def format_metric_value(value):
@@ -649,6 +802,8 @@ def display_financial_metrics(metrics):
 
     for i, (label, value) in enumerate(metric_mapping):
         display_metric_card(label, value, cols[i % len(cols)])
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
 def get_citation_title(citation_text, url=None):
     """Extract a human-readable title from citation text."""
@@ -1051,6 +1206,7 @@ def main():
 
     # Market Overview
     with st.expander("📊 Market Overview", expanded=True):
+        st.markdown('<div class="market-overview-container">', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("AI Market Size (2024)", MARKET_INSIGHTS["ai_market_size"]["2024"])
@@ -1069,6 +1225,7 @@ def main():
             else:
                 source_url = get_citation_url(source)
                 st.info(f"Source: [{source}]({source_url})")
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # Navigation
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
@@ -1097,8 +1254,9 @@ def main():
             # Company header
             st.markdown(f"## {company['name']} ({company['ticker']})")
 
-            # Key info cards
-            col1, col2, col3, col4 = st.columns(4)
+            # Key info cards - responsive layout
+            st.markdown('<div class="company-info-container">', unsafe_allow_html=True)
+            col1, col2, col3, col4 = st.columns(4)  # CSS will handle mobile responsiveness
             with col1:
                 formatted_market_cap = format_market_cap_with_currency(company['market_cap'], company.get('ticker', ''))
                 st.metric("Market Cap", formatted_market_cap)
@@ -1109,12 +1267,12 @@ def main():
             with col4:
                 recommendation_color = "🟢" if company['investment_recommendation'] == "Buy" else "🟡" if company['investment_recommendation'] == "Hold" else "🔴"
                 st.metric("Recommendation", f"{recommendation_color} {company['investment_recommendation']}")
+            st.markdown('</div>', unsafe_allow_html=True)
 
             # Stock chart section
             st.markdown("### 📈 Stock Performance")
 
-            # Chart controls - button-based period selection
-            col_controls = st.columns(10)
+            # Chart controls - responsive button layout
             periods = [
                 ("1D", "1d"), ("5D", "5d"), ("1M", "1mo"), ("6M", "6mo"),
                 ("YTD", "ytd"), ("1Y", "1y"), ("5Y", "5y"), ("MAX", "max")
@@ -1126,9 +1284,14 @@ def main():
             if f'chart_type_{company["ticker"]}' not in st.session_state:
                 st.session_state[f'chart_type_{company["ticker"]}'] = "candlestick"
 
-            # Period buttons
-            for i, (label, value) in enumerate(periods):
-                with col_controls[i]:
+            # Responsive period button layout
+            st.markdown('<div class="period-button-row">', unsafe_allow_html=True)
+            
+            # Create responsive columns for period buttons
+            # Mobile: 4 buttons per row (2 rows), Desktop: 8 buttons in one row
+            button_cols1 = st.columns(4)
+            for i, (label, value) in enumerate(periods[:4]):
+                with button_cols1[i]:
                     if st.button(
                         label,
                         key=f"period_{value}_{company['ticker']}",
@@ -1136,17 +1299,30 @@ def main():
                         use_container_width=True
                     ):
                         st.session_state[f'period_{company["ticker"]}'] = value
-                        # Don't change the chart type when period changes
                         st.rerun()
 
-            # Chart type selector
-            with col_controls[9]:
+            button_cols2 = st.columns(4)
+            for i, (label, value) in enumerate(periods[4:]):
+                with button_cols2[i]:
+                    if st.button(
+                        label,
+                        key=f"period_{value}_{company['ticker']}",
+                        type="primary" if st.session_state[f'period_{company["ticker"]}'] == value else "secondary",
+                        use_container_width=True
+                    ):
+                        st.session_state[f'period_{company["ticker"]}'] = value
+                        st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+
+            # Chart type selector - separate row for mobile
+            chart_cols = st.columns([2, 1, 1])
+            with chart_cols[0]:
                 chart_type = st.selectbox(
-                    "Chart",
+                    "Chart Type",
                     ["Candlestick", "Area", "Line"],
                     key=f"chart_select_{company['ticker']}",
-                    index=["Candlestick", "Area", "Line"].index(st.session_state[f'chart_type_{company["ticker"]}'].title()) if f'chart_type_{company["ticker"]}' in st.session_state else 0,
-                    label_visibility="collapsed"
+                    index=["Candlestick", "Area", "Line"].index(st.session_state[f'chart_type_{company["ticker"]}'].title()) if f'chart_type_{company["ticker"]}' in st.session_state else 0
                 )
                 if chart_type.lower() != st.session_state.get(f'chart_type_{company["ticker"]}', 'candlestick'):
                     st.session_state[f'chart_type_{company["ticker"]}'] = chart_type.lower()
@@ -1424,8 +1600,8 @@ def main():
                 # Companies grid with enhanced cards
                 st.markdown("### 📊 Companies in this Category")
 
-                # Create responsive grid - more companies per row since cards are smaller
-                companies_per_row = 4 if not st.session_state.get('mobile_view', False) else 2
+                # Create responsive grid - CSS will handle mobile layout
+                companies_per_row = 4  # CSS will make this 2 on mobile
                 company_rows = []
                 for i in range(0, len(category['companies']), companies_per_row):
                     company_rows.append(category['companies'][i:i + companies_per_row])
@@ -1579,30 +1755,47 @@ def main():
         )
 
         if selected_tickers:
-            # Period selection
-            col1, col2 = st.columns([8, 2])
-            with col1:
-                period_cols = st.columns(8)
-                periods = [
-                    ("1D", "1d"), ("5D", "5d"), ("1M", "1mo"), ("6M", "6mo"),
-                    ("YTD", "ytd"), ("1Y", "1y"), ("5Y", "5y"), ("MAX", "max")
-                ]
+            # Responsive period selection for comparison
+            periods = [
+                ("1D", "1d"), ("5D", "5d"), ("1M", "1mo"), ("6M", "6mo"),
+                ("YTD", "ytd"), ("1Y", "1y"), ("5Y", "5y"), ("MAX", "max")
+            ]
 
-                if 'comparison_period' not in st.session_state:
-                    st.session_state['comparison_period'] = "1y"
+            if 'comparison_period' not in st.session_state:
+                st.session_state['comparison_period'] = "1y"
 
-                for i, (label, value) in enumerate(periods):
-                    with period_cols[i]:
-                        if st.button(
-                            label,
-                            key=f"comp_period_{value}",
-                            type="primary" if st.session_state['comparison_period'] == value else "secondary",
-                            use_container_width=True
-                        ):
-                            st.session_state['comparison_period'] = value
-                            st.rerun()
+            # Responsive button layout for comparison
+            st.markdown('<div class="period-button-row">', unsafe_allow_html=True)
+            
+            comp_cols1 = st.columns(4)
+            for i, (label, value) in enumerate(periods[:4]):
+                with comp_cols1[i]:
+                    if st.button(
+                        label,
+                        key=f"comp_period_{value}",
+                        type="primary" if st.session_state['comparison_period'] == value else "secondary",
+                        use_container_width=True
+                    ):
+                        st.session_state['comparison_period'] = value
+                        st.rerun()
 
-            with col2:
+            comp_cols2 = st.columns(4)
+            for i, (label, value) in enumerate(periods[4:]):
+                with comp_cols2[i]:
+                    if st.button(
+                        label,
+                        key=f"comp_period_{value}",
+                        type="primary" if st.session_state['comparison_period'] == value else "secondary",
+                        use_container_width=True
+                    ):
+                        st.session_state['comparison_period'] = value
+                        st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+
+            # Chart type selector
+            comp_chart_cols = st.columns([2, 1, 1])
+            with comp_chart_cols[0]:
                 chart_type = st.selectbox(
                     "Chart Type",
                     ["Line", "Area"],
@@ -1651,13 +1844,23 @@ def main():
                         all_data_available = False
 
                 if all_data_available:
+                    # Responsive chart height for comparison
+                    comp_chart_height = 250 if st.session_state.get('mobile_mode', False) else 400
+                    
                     fig.update_layout(
-                        height=500,
+                        height=comp_chart_height,
                         title="Normalized Performance (Base = 100)",
                         yaxis_title="Relative Performance (%)",
                         xaxis_title="Date",
                         hovermode='x unified',
-                        template="plotly_white"
+                        template="plotly_white",
+                        margin=dict(
+                            l=30 if comp_chart_height == 250 else 40,
+                            r=30 if comp_chart_height == 250 else 40,
+                            t=40 if comp_chart_height == 250 else 50,
+                            b=30 if comp_chart_height == 250 else 40
+                        ),
+                        font=dict(size=10 if comp_chart_height == 250 else 12)
                     )
                     st.plotly_chart(fig, use_container_width=True)
 
@@ -1700,7 +1903,13 @@ def main():
                             st.markdown(f"#### {ticker}")
                             mini_chart = create_advanced_stock_chart(info, hist, ticker, 'line')
                             if mini_chart:
-                                mini_chart.update_layout(height=300, showlegend=False)
+                                # Responsive mini chart height
+                                mini_height = 200 if st.session_state.get('mobile_mode', False) else 300
+                                mini_chart.update_layout(
+                                    height=mini_height, 
+                                    showlegend=False,
+                                    margin=dict(l=20, r=20, t=20, b=20) if mini_height == 200 else dict(l=30, r=30, t=30, b=30)
+                                )
                                 st.plotly_chart(mini_chart, use_container_width=True)
         else:
             st.info("👆 Please select at least one stock to begin comparison.")
@@ -1751,13 +1960,6 @@ def main():
 
 # Sidebar
 with st.sidebar:
-    st.markdown("### 🔧 Settings")
-    mobile_view = st.checkbox("Mobile View", value=False)
-    if mobile_view:
-        st.session_state['mobile_view'] = True
-    else:
-        st.session_state['mobile_view'] = False
-
     st.markdown("### 📊 Quick Stats")
     total_companies = len(COMPANY_PROFILES)
     us_companies = sum(1 for c in COMPANY_PROFILES.values() if c['country'] in ['US', 'France/Global'])
