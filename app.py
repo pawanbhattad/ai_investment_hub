@@ -1344,10 +1344,8 @@ def main():
             if view_mode == "Summary":
                 # Summary view
                 st.markdown("### 📋 Company Overview")
-                # Parse citations if present
+                # Display overview text without citations
                 overview_text = company['overview']
-                if 'citations' in company:
-                    overview_text = parse_citations(overview_text, company['citations'], company.get('ticker'))
                 # Wrap in a div to ensure consistent styling
                 st.markdown(f'<div style="font-style: normal !important;">{overview_text}</div>', unsafe_allow_html=True)
 
@@ -1386,24 +1384,6 @@ def main():
                 # Investment rationale
                 st.markdown("### 💡 Investment Rationale")
                 st.info(company['recommendation_rationale'])
-
-                # Citations section
-                if 'citations' in company:
-                    with st.expander("📚 View Citations"):
-                        for key, citation in company['citations'].items():
-                            url = get_citation_url(citation, company.get('ticker'))
-                            display_key = key.replace('_', ' ').title()
-                            if url and url != '#':
-                                # Extract citation number and text
-                                citation_parts = citation.split(']', 1)
-                                if len(citation_parts) == 2:
-                                    citation_num = citation_parts[0] + ']'
-                                    citation_text = citation_parts[1].strip()
-                                    st.markdown(f"• **{display_key}:** {citation_num} [{citation_text}]({url})")
-                                else:
-                                    st.markdown(f"• **{display_key}:** [{citation}]({url})")
-                            else:
-                                st.markdown(f"• **{display_key}:** {citation}")
 
             else:  # Detailed view
                 # Tabbed detailed analysis
@@ -1451,12 +1431,28 @@ def main():
                                 # Replace the URL with a markdown link
                                 development_text = development_text.replace(url, f"[Read more]({url})")
                             else:
-                                # Try to generate a relevant link based on the content
-                                if company.get('ticker'):
-                                    search_terms = key.replace('_', ' ')
-                                    # Create a news search link
-                                    search_url = f"https://www.google.com/search?q={company['name']}+{search_terms}+news"
-                                    development_text = f"{value} ([News]({search_url}))"
+                                # Check if we have a citation for this development
+                                citation_key = None
+                                citations = company.get('citations', {})
+                                
+                                # Look for relevant citation keys that match this development
+                                for cite_key in citations.keys():
+                                    if (key.lower() in cite_key.lower() or 
+                                        cite_key.lower() in key.lower() or
+                                        any(word in cite_key.lower() for word in key.lower().split('_'))):
+                                        citation_key = cite_key
+                                        break
+                                
+                                # If we found a relevant citation, use its URL
+                                if citation_key:
+                                    citation_url = get_citation_url(citations[citation_key], company.get('ticker'))
+                                    if citation_url and citation_url != '#':
+                                        development_text = f"{value} ([Source]({citation_url}))"
+                                    else:
+                                        development_text = value  # No link if no valid URL
+                                else:
+                                    # No citation found, just show the text without any link
+                                    development_text = value
 
                             st.info(f"**{key.replace('_', ' ').upper()}:** {development_text}")
 
