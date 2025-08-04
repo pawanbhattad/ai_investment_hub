@@ -82,7 +82,7 @@ Risks: At ~28× sales, future growth is largely priced in. Any slowdown in AI de
             "revenue": "$60.9B (TTM)",
             "gross_margin": "73.5%",
             "operating_margin": "62.1%",
-            "r_and_d_expense": "$8.9B annually"
+            "r_&_d_expense": "$8.9B annually"
         },
 
         "key_strengths": [
@@ -178,7 +178,7 @@ Cash Flow: Free cash flow TTM ~$2.75B, which is positive but lower than earnings
             "revenue": "$22.7B (TTM)",
             "gross_margin": "53.6%",
             "operating_margin": "22.3%",
-            "r_and_d_expense": "$5.9B annually"
+            "r_&_d_expense": "$5.9B annually"
         },
 
         "key_strengths": [
@@ -472,7 +472,7 @@ Balance Sheet: Debt-to-Equity is modest (~0.33) with a AAA credit rating; it car
             "revenue": "$270B (TTM)",
             "net_income": "$100B+",
             "operating_margin": "42%",
-            "r_and_d_expense": "$27B annually"
+            "r_&_d_expense": "$27B annually"
         },
 
         "key_strengths": [
@@ -570,7 +570,7 @@ Balance Sheet: Over $120 billion in cash & short-term investments, and minimal l
             "revenue": "$257B (FY2024)",
             "advertising_revenue": "~$200B",
             "cloud_revenue": "Growing 28% YoY",
-            "r_and_d_expense": "$40B annually"
+            "r_&_d_expense": "$40B annually"
         },
 
         "key_strengths": [

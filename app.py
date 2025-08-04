@@ -18,7 +18,7 @@ import re
 # Page configuration
 st.set_page_config(
     page_title="AI Infrastructure Investment Hub | Stock Analysis & Research",
-    page_icon="💎",
+    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -1325,42 +1325,196 @@ def display_company_comparison(selected_companies):
 # Main app
 def main():
     # Header
-    st.title("💎 AI Infrastructure Investment Hub")
+    st.title("🧠 AI Infrastructure Investment Hub")
     st.markdown("### Your Gateway to Tech Stocks Powering the AI Revolution")
 
-    # Market Overview
-    with st.expander("📊 Market Overview", expanded=True):
-        st.markdown('<div class="market-overview-container">', unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("AI Market Size (2024)", MARKET_INSIGHTS["ai_market_size"]["2024"])
-            st.metric("Expected by 2030", MARKET_INSIGHTS["ai_market_size"]["2030"])
-        with col2:
-            st.metric("Market CAGR", MARKET_INSIGHTS["ai_market_size"]["cagr"])
-            st.metric("Data Center Growth", MARKET_INSIGHTS["data_center_growth"]["capacity_increase"])
-        with col3:
-            st.metric("Power Consumption Growth", MARKET_INSIGHTS["data_center_growth"]["power_consumption"])
-            source = MARKET_INSIGHTS["ai_market_size"]["source"]
-            # Extract title and URL from the source string
-            if "] " in source and source.startswith("["):
-                title = source[1:source.index("]")]
-                url = source[source.index("] ") + 2:]
-                st.info(f"Source: [{title}]({url})")
-            else:
-                source_url = get_citation_url(source)
-                st.info(f"Source: [{source}]({source_url})")
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # Navigation
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "🏢 Company Analysis",
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "📊 Market Overview",
+        "🏢 Company Analysis", 
         "📈 Investment Categories",
         "🎯 Investment Strategy",
-        "📊 Stock Comparison",
+        "⚖️ Stock Comparison",
         "📚 Resources"
     ])
 
     with tab1:
+        st.markdown("## 📊 The AI Infrastructure Gold Rush")
+        
+        # Market Overview Metrics within the tab
+        metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+        with metric_col1:
+            st.metric("AI Market Size (2024)", "$150 billion")
+        with metric_col2:
+            st.metric("Expected by 2030", "$1.3 trillion")
+        with metric_col3:
+            st.metric("Market CAGR", "33%")
+        with metric_col4:
+            st.metric("Hyperscaler Capex (2025)", "~$200B projected")
+        
+        # Second row
+        metric2_col1, metric2_col2, metric2_col3, metric2_col4 = st.columns(4)
+        with metric2_col1:
+            st.metric("Data Center Growth", "40% annually")
+        with metric2_col2:
+            st.metric("Power Consumption Growth", "Growing 20% YoY")
+        with metric2_col3:
+            st.info("Source: [McKinsey AI Report 2025](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai)")
+        with metric2_col4:
+            pass  # Empty column for spacing
+        
+        st.markdown("---")
+        st.markdown("### 📋 Executive Summary")
+        
+        # Executive Summary content with consistent styling
+        st.markdown("""
+        The generative Artificial Intelligence (AI) revolution has ignited a multi-trillion-dollar, multi-year capital expenditure supercycle aimed at constructing a new class of global infrastructure: the \"AI Factory.\" This paradigm shift from traditional data processing to accelerated computing represents a fundamental architectural and economic transformation.
+
+        This analysis reveals several dominant investment themes:
+
+        **🏆 Full-Stack Ecosystem Supremacy** - Companies that control hardware, networking, and proprietary software layers (most notably NVIDIA) have established formidable competitive moats and command premium valuations.
+
+        **🚀 Credible Challengers** - Companies like AMD are championing open-source approaches to chip away at incumbent market share, offering compelling alternatives for hyperscale customers wary of vendor lock-in.
+
+        **⚒️ Physical Infrastructure \"Picks and Shovels\"** - The critical, often undervalued importance of companies providing power, cooling, and real estate that are absolute prerequisites for any AI deployment.
+
+        **🇮🇳 India's Strategic Rise** - The emergence of India as a global data center hub, driven by explosive data growth, government initiatives, and a burgeoning domestic ecosystem.
+        """)
+        
+        # Market Dynamics Section
+        st.markdown("---")
+        st.markdown("### 🌍 Market Dynamics & Landscape")
+        
+        dynamics_tabs = st.tabs(["🇺🇸 US Epicenter", "🇮🇳 India's Rise", "⚡ AI Compute Demand", "🌐 Geopolitical Factors"])
+        
+        with dynamics_tabs[0]:
+            st.write("**Hyperscaler Capex Engine**: The US leads the AI infrastructure boom, driven by massive capital expenditure from Amazon Web Services, Microsoft Azure, Google Cloud, and Meta. These entities are in a fierce competitive race to build capacity for proprietary AI models and enterprise demand.")
+            st.write("")
+            st.write("**Government Support**: Strategic government backing through the U.S. Department of Energy selecting federal sites for AI data centers, recognizing domestic AI compute capacity as critical for economic competitiveness and national security.")
+            st.write("")
+            st.write("**Investment Scale**: Alphabet committed approximately 75 billion USD for data center capacity in 2025, highlighting the massive investment flowing into the ecosystem.")
+        
+        with dynamics_tabs[1]:
+            st.write("**Explosive Growth**: India's data center capacity projected to more than double from 950 MW in 2024 to 1,800-2,000 MW by 2026. Market size forecast to grow from 5 billion USD in 2024 to over 21 billion USD by 2030.")
+            st.write("")
+            st.write("**Digital Sovereignty**: Government initiatives including Draft Data Centre Policy 2020 and data localization mandates requiring data generated in India to be stored domestically.")
+            st.write("")
+            st.write("**Global Investment**: Google's planned 6 billion USD, 1-gigawatt facility in Andhra Pradesh represents one of Asia's largest data centers. Production-Linked Incentive (PLI) schemes building domestic manufacturing ecosystem.")
+            st.write("")
+            st.write("**Strategic Position**: India emerging as stable, democratic alternative to China for supply chain diversification.")
+        
+        with dynamics_tabs[2]:
+            st.markdown("""
+            **Architectural Revolution**: Transition from traditional data centers to \"AI Factories\" - not incremental upgrade but fundamental reimagining. Legacy CPU-based systems replaced by GPU-accelerated parallel computing.
+
+            **Scale Challenge**: Research suggests at least twice the number of data centers needs construction in less than quarter the time of the last 25 years.
+
+            **Power Intensity**: Modern AI hardware requires up to 200 KW per rack vs. traditional 5-15 KW. AI GPUs consume enormous power and generate extreme heat, rendering air-cooling inadequate.
+
+            **Stranded Assets**: Older, power-constrained data centers at risk of becoming obsolete due to inability to support high-density AI workloads.
+            """)
+        
+        with dynamics_tabs[3]:
+            st.markdown("""
+            **Export Restrictions**: US restrictions on high-end AI chips (NVIDIA H100/B100) to China create strategic opening for India as alternative destination.
+
+            **Trade Dynamics**: US pushing for greater market access in India while potential 25% tariffs on Indian goods pose risk to component costs.
+
+            **Supply Chain Resilience**: India's PLI schemes function as geopolitical hedge, reducing reliance on Chinese imports and building domestic capability for servers, networking, and power equipment.
+
+            **Strategic Positioning**: De-risking through stronger domestic supply chains makes long-term Indian investments more stable and attractive.
+            """)
+
+        # Infrastructure Foundation Section
+        st.markdown("---")
+        st.markdown("### ⚡ Physical Infrastructure Foundation")
+        
+        infrastructure_tabs = st.tabs(["🔌 Power Systems", "❄️ Cooling Technologies", "🏢 Digital Real Estate", "📊 Market Data"])
+        
+        with infrastructure_tabs[0]:
+            st.markdown("**Critical Bottleneck**: Energy demand of AI is staggering - single data center can consume as much electricity as a small city. Power infrastructure is a critical bottleneck for AI scaling.")
+            st.markdown("")
+            st.markdown("**Key Players**:")
+            st.markdown("• **Vertiv (VRT)**: Global leader in UPS, switchgear, power distribution, thermal management. Pioneering liquid cooling for AI. Partnership with Oklo for nuclear-powered data centers.")
+            st.markdown("• **Eaton (ETN)**: Comprehensive power management including UPS, PDUs, switchgear, transformers. Focus on sustainable, efficient infrastructure.")
+            st.markdown("• **Schneider Electric**: End-to-end power, cooling, racks, management software. Validated designs with NVIDIA, acquired Motivair for liquid cooling.")
+            st.markdown("• **Generac (GNRC)**: Hidden gem entering data center backup power with 2.25-3.25 MW industrial generators specifically for hyperscale facilities.")
+        
+        with infrastructure_tabs[1]:
+            st.markdown("**Thermal Challenge**: Every watt consumed by GPU converted to heat. As rack densities soar (up to 200 KW per rack), traditional air cooling insufficient.")
+            st.markdown("")
+            st.write("**Market Growth**: Liquid cooling market projected 33.2% CAGR from 2.8 billion USD in 2025 to over 21 billion USD in 2032 - fundamental technological shift.")
+            st.markdown("")
+            st.markdown("**Technologies**:")
+            st.markdown("• **Direct-to-Chip Cooling**: Liquid piped directly to processors")
+            st.markdown("• **Full Immersion Cooling**: Entire servers submerged in dielectric fluid") 
+            st.markdown("• **Modular Construction**: Off-site pre-fabrication reduces on-site time and costs")
+            st.markdown("")
+            st.write("**Hidden Gem**: Comfort Systems USA (FIX) - HVAC/MEP specialist, 1,300% stock gain over 5 years, 8.1 billion USD+ project backlog growing 40% annually.")
+        
+        with infrastructure_tabs[2]:
+            st.markdown("**🏢 Digital Real Estate REITs**: Companies owning and operating the physical data center facilities experiencing unprecedented demand.")
+            st.markdown("")
+            st.markdown("**Key Characteristics**:")
+            st.markdown("• **Location Critical**: Proximity to fiber networks, power grids, population centers")
+            st.markdown("• **Power Density**: New facilities designed for 200+ KW per rack vs. legacy 5-15 KW")
+            st.markdown("• **Colocation vs. Hyperscale**: Different business models serving enterprise vs. cloud giants")
+            st.markdown("")
+            st.markdown("**Strategic Advantage**: Modern, AI-ready facilities command premium rents while legacy assets risk becoming stranded due to power/cooling limitations.")
+        
+        with infrastructure_tabs[3]:
+            st.write("""
+            **India Data Center Growth Projections (2024-2030)**
+
+            | Year | Capacity (MW) | Market Size | Key Drivers |
+            |------|---------------|-------------|-------------|
+            | 2024 | 950 MW | ~$5.0B | Data localization, 5G rollout |
+            | 2026 | 1,800-2,100 MW | ~$8.0B | AI/ML adoption, Digital India |
+            | 2030 | >4,500 MW | >$21.7B | AI ecosystem maturation |
+
+            **Investment Scale**:
+            
+            • Google: $6B, 1GW facility in Andhra Pradesh
+            
+            • Alphabet: ~$75B committed for data center capacity (2025)
+            
+            • Global hyperscaler capex driving entire supply chain
+            """)
+
+        # Key Takeaways
+        st.markdown("---")
+        st.markdown("### 🎯 Key Investment Takeaways")
+        
+        takeaway_col1, takeaway_col2 = st.columns(2)
+        
+        with takeaway_col1:
+            st.markdown("""
+            **🏆 Dominant Themes**
+            
+            • Full-stack ecosystem control provides strongest moats
+            
+            • Open-source challengers gaining traction against incumbents
+            
+            • Physical infrastructure often undervalued but critical
+            
+            • India emerging as major growth market
+            """)
+        
+        with takeaway_col2:
+            st.markdown("""
+            **💰 Investment Approach**
+            
+            • Diversified portfolio balancing US leaders and India growth
+            
+            • Consider "picks and shovels" players for steady returns
+            
+            • Monitor hyperscaler capex cycles for timing
+            
+            • Geopolitical factors increasingly important for positioning
+            """)
+
+    with tab2:
         # Company selector
         col1, col2 = st.columns([3, 1])
         with col1:
@@ -1578,7 +1732,9 @@ def main():
 
                 with detail_tabs[0]:
                     st.markdown("### Innovations & Technological Moats")
-                    st.write(company['innovations_moats'])
+                    # Ensure consistent text formatting
+                    innovations_text = company['innovations_moats']
+                    st.markdown(f'<div style="font-style: normal !important;">{innovations_text}</div>', unsafe_allow_html=True)
                     if 'products_specifications' in company:
                         st.markdown("#### Product Specifications")
                         for category, products in company['products_specifications'].items():
@@ -1586,17 +1742,21 @@ def main():
                             if isinstance(products, list):
                                 # Display list items in a compact format with bullet points on same line
                                 products_str = " • ".join(products)
-                                st.markdown(f"**{category_name}:** {products_str}")
+                                st.markdown(f"<strong>{category_name}:</strong> {products_str}", unsafe_allow_html=True)
                             else:
-                                st.markdown(f"**{category_name}:** {products}")
+                                st.markdown(f"<strong>{category_name}:</strong> {products}", unsafe_allow_html=True)
 
                 with detail_tabs[1]:
                     st.markdown("### Infrastructure Capabilities")
-                    st.write(company['infrastructure_capabilities'])
+                    # Ensure consistent text formatting like Company Overview
+                    infrastructure_text = company['infrastructure_capabilities']
+                    st.markdown(f'<div style="font-style: normal !important;">{infrastructure_text}</div>', unsafe_allow_html=True)
 
                 with detail_tabs[2]:
                     st.markdown("### Partnerships & Customer Base")
-                    st.write(company['partnerships_customers'])
+                    # Ensure consistent text formatting
+                    partnerships_text = company['partnerships_customers']
+                    st.markdown(f'<div style="font-style: normal !important;">{partnerships_text}</div>', unsafe_allow_html=True)
                     if 'recent_developments' in company:
                         st.markdown("#### Recent Developments")
                         for key, value in company['recent_developments'].items():
@@ -1636,11 +1796,14 @@ def main():
 
                 with detail_tabs[3]:
                     st.markdown("### Competitive Landscape")
-                    st.write(company['competitive_landscape'])
+                    # Ensure consistent text formatting
+                    competitive_text = company['competitive_landscape']
+                    st.markdown(f'<div style="font-style: normal !important;">{competitive_text}</div>', unsafe_allow_html=True)
 
                 with detail_tabs[4]:
                     st.markdown("### Financial Analysis")
-                    # Display the financial analysis text without the redundant metrics
+                    
+                    # Display the financial analysis text with consistent formatting
                     financial_text = company['financial_analysis']
                     # Remove the "Market Cap:" line if it exists since it's already shown above
                     lines = financial_text.split('\n')
@@ -1661,30 +1824,44 @@ def main():
                                 metric_value = metric_value.replace('~', '').strip()
                                 metrics_data.append((metric_name, metric_value))
 
-                    # Display in a clean 2-column layout
+                    # Display in a clean 2-column layout with consistent styling
                     if metrics_data:
                         cols = st.columns(2)
                         for i, (metric, value) in enumerate(metrics_data):
                             with cols[i % 2]:
-                                st.markdown(f"**{metric}**")
-                                st.markdown(f"{value}")
-                                st.markdown("")  # Add spacing
+                                # Use consistent text styling like other tabs
+                                st.markdown(f'<div style="font-style: normal !important;"><strong>{metric}</strong></div>', unsafe_allow_html=True)
+                                st.markdown(f'<div style="font-style: normal !important; margin-bottom: 1em;">{value}</div>', unsafe_allow_html=True)
 
                     # Show financial highlights if they exist and are different from detailed_metrics
                     if 'financial_highlights' in company:
-                        st.markdown("#### Key Financial Highlights")
+                        st.markdown("**Key Financial Highlights**")
+                        highlights_data = []
                         for key, value in company['financial_highlights'].items():
                             # Only show if not already in detailed_metrics
                             if 'detailed_metrics' not in company or key not in company['detailed_metrics']:
-                                st.metric(key.replace('_', ' ').title(), value)
+                                highlights_data.append((key.replace('_', ' ').title(), value))
+                        
+                        # Display in same 2-column layout with consistent styling as Key Financial Metrics
+                        if highlights_data:
+                            cols = st.columns(2)
+                            for i, (metric, value) in enumerate(highlights_data):
+                                with cols[i % 2]:
+                                    # Use consistent text styling like Key Financial Metrics
+                                    st.markdown(f'<div style="font-style: normal !important;"><strong>{metric}</strong></div>', unsafe_allow_html=True)
+                                    st.markdown(f'<div style="font-style: normal !important; margin-bottom: 1em;">{value}</div>', unsafe_allow_html=True)
 
                 with detail_tabs[5]:
                     st.markdown("### Hidden Gems & Underappreciated Assets")
-                    st.write(company['hidden_gems'])
+                    # Ensure consistent text formatting
+                    hidden_gems_text = company['hidden_gems']
+                    st.markdown(f'<div style="font-style: normal !important;">{hidden_gems_text}</div>', unsafe_allow_html=True)
 
                 with detail_tabs[6]:
                     st.markdown("### Trade & Geopolitical Impact")
-                    st.write(company['geopolitical_impact'])
+                    # Ensure consistent text formatting
+                    geopolitical_text = company['geopolitical_impact']
+                    st.markdown(f'<div style="font-style: normal !important;">{geopolitical_text}</div>', unsafe_allow_html=True)
 
                 with detail_tabs[7]:
                     if 'citations' in company:
@@ -1700,13 +1877,13 @@ def main():
                                     # Get context-aware title for the link
                                     link_title = get_context_aware_title(key, citation, url)
                                     # Make the display key itself clickable
-                                    st.markdown(f"- **[{display_key}]({url}):** {citation_num}", unsafe_allow_html=True)
+                                    st.markdown(f"- <strong><a href='{url}' target='_blank'>{display_key}</a>:</strong> {citation_num}", unsafe_allow_html=True)
                                 else:
-                                    st.markdown(f"- **[{display_key}]({url}):** {citation}")
+                                    st.markdown(f"- <strong><a href='{url}' target='_blank'>{display_key}</a>:</strong> {citation}", unsafe_allow_html=True)
                             else:
-                                st.markdown(f"- **{display_key}:** {citation}")
+                                st.markdown(f"- <strong>{display_key}:</strong> {citation}", unsafe_allow_html=True)
 
-    with tab2:
+    with tab3:
         st.markdown("## 📈 Investment Categories")
         st.markdown("*Strategic groupings of companies positioned to benefit from AI infrastructure growth*")
 
@@ -1719,7 +1896,8 @@ def main():
             "high_growth": "🚀",
             "hidden_gems": "💎",
             "turnaround": "🔄",
-            "india_focus": "🇮🇳"
+            "data_center_reits": "🏢",
+            "india_tech": "🇮🇳"
         }
 
         for idx, (key, cat) in enumerate(INVESTMENT_CATEGORIES.items()):
@@ -1756,7 +1934,7 @@ def main():
                     st.markdown(f"*{category['description']}*")
 
                     # Characteristics in a compact format
-                    st.markdown("**Key Characteristics:**")
+                    st.markdown("<strong>Key Characteristics:</strong>", unsafe_allow_html=True)
                     char_cols = st.columns(2)
                     for i, char in enumerate(category['characteristics']):
                         with char_cols[i % 2]:
@@ -1851,7 +2029,7 @@ def main():
                         df = pd.DataFrame(comparison_data)
                         st.dataframe(df, use_container_width=True, height=300)
 
-    with tab3:
+    with tab4:
         st.markdown("## 🎯 Investment Strategy")
 
         # Strategy selector
@@ -1863,38 +2041,52 @@ def main():
         if strategy == "Balanced AI Portfolio":
             st.info("""
             **Balanced AI Portfolio Strategy**
-            - 40% Blue Chip AI Leaders (NVDA, MSFT, GOOGL)
-            - 30% High Growth Players (AMD, SMCI, ARISTA)
-            - 20% Hidden Gems (VERTIV, FIX, EQIX)
-            - 10% Turnaround Stories (INTC, ORCL)
+            
+            • 40% Blue Chip AI Leaders (NVDA, MSFT, GOOGL)
+            
+            • 30% High Growth Players (AMD, SMCI, ARISTA)
+            
+            • 20% Hidden Gems (VERTIV, FIX, EQIX)
+            
+            • 10% Turnaround Stories (INTC, ORCL)
 
             This strategy provides exposure to the full AI value chain while managing risk through diversification.
             """)
         elif strategy == "High Growth Focus":
             st.info("""
             **High Growth Focus Strategy**
-            - 50% High Growth Players (AMD, SMCI, ARISTA, INFY)
-            - 30% Emerging AI Companies (VERTIV, MICRON)
-            - 20% Blue Chip for stability (NVDA, MSFT)
+            
+            • 50% High Growth Players (AMD, SMCI, ARISTA, INFY)
+            
+            • 30% Emerging AI Companies (VERTIV, MICRON)
+            
+            • 20% Blue Chip for stability (NVDA, MSFT)
 
             Higher risk/reward profile targeting companies with >30% revenue growth.
             """)
         elif strategy == "Value & Turnaround":
             st.info("""
             **Value & Turnaround Strategy**
-            - 40% Turnaround Stories (INTC, ORCL, DELL)
-            - 30% Hidden Gems (EQIX, FIX, VERTIV)
-            - 30% Stable cashflow (MSFT, GOOGL)
+            
+            • 40% Turnaround Stories (INTC, ORCL, DELL)
+            
+            • 30% Hidden Gems (EQIX, FIX, VERTIV)
+            
+            • 30% Stable cashflow (MSFT, GOOGL)
 
             Focus on undervalued companies with AI transformation potential.
             """)
         else:  # Conservative Blue Chip
             st.info("""
             **Conservative Blue Chip Strategy**
-            - 40% MSFT (Cloud & AI leader)
-            - 30% GOOGL (AI research pioneer)
-            - 20% AMZN (AWS dominance)
-            - 10% NVDA (AI chip leader)
+            
+            • 40% MSFT (Cloud & AI leader)
+            
+            • 30% GOOGL (AI research pioneer)
+            
+            • 20% AMZN (AWS dominance)
+            
+            • 10% NVDA (AI chip leader)
 
             Lower volatility approach focusing on established market leaders.
             """)
@@ -1911,10 +2103,10 @@ def main():
 
         for risk, level, description in risk_factors:
             level_class = f"risk-{level.lower()}"
-            st.markdown(f"**{risk}:** <span class='{level_class}'>{level}</span> - {description}", unsafe_allow_html=True)
+            st.markdown(f"<strong>{risk}:</strong> <span class='{level_class}'>{level}</span> - {description}", unsafe_allow_html=True)
 
-    with tab4:
-        st.markdown("## 📊 Stock Comparison Dashboard")
+    with tab5:
+        st.markdown("## ⚖️ Stock Comparison Dashboard")
         st.markdown("Compare multiple stocks side-by-side to analyze relative performance.")
 
         # Get all tickers
@@ -2150,7 +2342,7 @@ def main():
         else:
             st.info("👆 Please select at least one stock to begin comparison.")
 
-    with tab5:
+    with tab6:
         st.markdown("## 📚 Resources & Information")
 
         col1, col2 = st.columns(2)
@@ -2169,9 +2361,13 @@ def main():
             with st.expander("Common Terms"):
                 st.markdown("""
                 **P/E Ratio**: Price-to-Earnings ratio, valuation metric
+                
                 **Market Cap**: Total value of company's shares
+                
                 **ROE**: Return on Equity, profitability measure
+                
                 **PEG Ratio**: P/E ratio divided by growth rate
+                
                 **Free Cash Flow**: Cash generated after expenses
                 """)
 
@@ -2209,8 +2405,8 @@ with st.sidebar:
 
     st.markdown("### 🎯 Investment Categories")
     for cat_key, cat_data in INVESTMENT_CATEGORIES.items():
-        icon = {"blue_chip": "👑", "high_growth": "🚀", "hidden_gems": "💎", "turnaround": "🔄", "india_focus": "🇮🇳"}.get(cat_key, "📊")
-        st.markdown(f"{icon} **{cat_data['name']}**")
+        icon = {"blue_chip": "👑", "high_growth": "🚀", "hidden_gems": "💎", "turnaround": "🔄", "data_center_reits": "🏢", "india_tech": "🇮🇳"}.get(cat_key, "📊")
+        st.markdown(f"{icon} <strong>{cat_data['name']}</strong>", unsafe_allow_html=True)
         st.caption(f"{len(cat_data['companies'])} companies")
 
 if __name__ == "__main__":
