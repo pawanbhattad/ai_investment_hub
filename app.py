@@ -1,7 +1,15 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+
+# Handle plotly import with error catching
+try:
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+    PLOTLY_AVAILABLE = True
+except ImportError as e:
+    st.error(f"Plotly not available: {e}")
+    PLOTLY_AVAILABLE = False
+
 from datetime import datetime, timedelta
 import yfinance as yf
 from content import COMPANY_PROFILES, INVESTMENT_CATEGORIES, MARKET_INSIGHTS
@@ -435,6 +443,10 @@ def fetch_stock_data(ticker, period="1y"):
 
 def create_advanced_stock_chart(info, hist, ticker, chart_type="candlestick"):
     """Create an advanced stock chart with technical indicators."""
+    
+    if not PLOTLY_AVAILABLE:
+        st.error("Plotly is required for charts but not available. Please check the deployment logs.")
+        return None
 
     if hist is None or hist.empty:
         st.error(f"No historical data available for {ticker}")
@@ -1614,6 +1626,10 @@ def main():
                 # Multiple stocks - comparison view
                 # Normalized performance chart
                 st.markdown("### 📈 Normalized Performance Comparison")
+                
+                if not PLOTLY_AVAILABLE:
+                    st.error("Plotly is required for comparison charts but not available.")
+                    return
 
                 fig = go.Figure()
                 all_data_available = True
