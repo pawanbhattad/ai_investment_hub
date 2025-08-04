@@ -72,9 +72,15 @@ st.markdown("""
             font-size: 14px;
         }
         
-        /* Mobile-specific chart sizing */
+        /* Mobile-specific chart sizing with proper spacing */
         .stPlotlyChart {
             height: 300px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        /* Ensure proper spacing after charts */
+        .stPlotlyChart + div {
+            margin-top: 20px !important;
         }
         
         /* Period button optimizations for mobile */
@@ -90,17 +96,18 @@ st.markdown("""
             margin: 2px 0 !important;
         }
         
-        /* Period button grid for mobile - force 2 buttons per row */
-        .period-button-row {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            gap: 4px !important;
+        /* Period button grid for mobile - force responsive layout */
+        .period-button-row [data-testid="column"] {
+            width: 25% !important;
+            flex: 0 0 25% !important;
+            padding: 2px !important;
         }
         
-        .period-button-row [data-testid="column"] {
-            flex: 1 1 48% !important;
-            max-width: 48% !important;
-            padding: 2px !important;
+        /* Mobile-specific period button improvements */
+        .stButton button {
+            width: 100% !important;
+            font-size: 11px !important;
+            padding: 6px 4px !important;
         }
         
         /* Chart type selector mobile optimization */
@@ -145,10 +152,17 @@ st.markdown("""
         .financial-metrics-container [data-testid="column"] {
             width: 50% !important;
             flex: 0 0 50% !important;
+            padding: 4px !important;
         }
         
         .financial-metrics-container [data-testid="column"]:nth-child(n+3) {
-            margin-top: 10px !important;
+            margin-top: 8px !important;
+        }
+        
+        /* Force wrap after 2 columns */
+        .financial-metrics-container [data-testid="column"]:nth-child(3),
+        .financial-metrics-container [data-testid="column"]:nth-child(4) {
+            margin-top: 8px !important;
         }
         
         /* Company info cards mobile - 2 columns */
@@ -169,6 +183,24 @@ st.markdown("""
             width: 50% !important;
             flex: 0 0 50% !important;
             padding: 4px !important;
+        }
+        
+        /* Override Streamlit's default column behavior on mobile */
+        [data-testid="column"] {
+            min-width: auto !important;
+        }
+        
+        /* Specific mobile overrides for containers */
+        @media (max-width: 768px) {
+            .financial-metrics-container {
+                display: flex !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .company-info-container {
+                display: flex !important;
+                flex-wrap: wrap !important;
+            }
         }
         
         /* Mobile expander optimization */
@@ -1301,6 +1333,9 @@ def main():
                         st.session_state[f'period_{company["ticker"]}'] = value
                         st.rerun()
 
+            # Small spacing between button rows
+            st.markdown('<div style="height: 5px;"></div>', unsafe_allow_html=True)
+            
             button_cols2 = st.columns(4)
             for i, (label, value) in enumerate(periods[4:]):
                 with button_cols2[i]:
@@ -1344,8 +1379,10 @@ def main():
             if view_mode == "Summary":
                 # Summary view
                 st.markdown("### 📋 Company Overview")
-                # Display overview text without citations
+                # Display overview text without citations - remove citation numbers
                 overview_text = company['overview']
+                # Remove citation numbers like [1], [2], etc.
+                overview_text = re.sub(r'\[\d+\]', '', overview_text)
                 # Wrap in a div to ensure consistent styling
                 st.markdown(f'<div style="font-style: normal !important;">{overview_text}</div>', unsafe_allow_html=True)
 
@@ -1775,6 +1812,9 @@ def main():
                         st.session_state['comparison_period'] = value
                         st.rerun()
 
+            # Small spacing between button rows
+            st.markdown('<div style="height: 5px;"></div>', unsafe_allow_html=True)
+            
             comp_cols2 = st.columns(4)
             for i, (label, value) in enumerate(periods[4:]):
                 with comp_cols2[i]:
